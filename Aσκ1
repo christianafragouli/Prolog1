@@ -1,0 +1,30 @@
+% Κύριος κανόνας
+main :-
+    metro([(mitsos,3),(mitsos,5),(kitsos,1,7)], Dur, St1, St2),
+    write('Shortest duration: '), write(Dur), nl,
+    write('Starting station: '), write(St1), nl,
+    write('Ending station: '), write(St2), nl,
+    halt.
+
+% Βασικός κανόνας για την εύρεση της συντομότερης διαδρομής
+metro(Stmts, Dur, St1, St2) :-
+    findall((S1, S2, D), calculate_duration(Stmts, S1, S2, D), Durations),
+    min_list(Durations, (St1, St2, Dur)).
+
+% Υπολογισμός της διάρκειας για ένα ζεύγος σταθμών
+calculate_duration(Stmts, S1, S2, Dur) :-
+    member((mitsos, D1), Stmts),
+    member((kitsos, S1, D2), Stmts),
+    member((mitsos, D3), Stmts),
+    member((kitsos, S2, D4), Stmts),
+    Dur is D1 + D2 + D3 + D4.
+
+% Κανόνας για την εύρεση του ελάχιστου στοιχείου σε λίστα τριάδων
+min_list([(S1, S2, Dur)], (S1, S2, Dur)).
+min_list([(S1, S2, Dur1)|Rest], (St1, St2, Dur)) :-
+    min_list(Rest, (St1, St2, Dur2)),
+    (Dur1 < Dur2 -> Dur = Dur1, St1 = S1, St2 = S2; Dur = Dur2, St1 = St1, St2 = St2).
+% ?- metro([(mitsos,3),(mitsos,5),(kitsos,1,7)], Dur, St1, St2).
+% Dur = 20,
+% St1 = St2, St2 = 1
+% correct answer Dur=2, St1=2, St2=3.
