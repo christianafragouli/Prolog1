@@ -1,0 +1,15 @@
+% Base case of the recursive relation
+mitsblocks([], 0).
+
+% Recursive relation for mits-blocks
+mitsblocks([m, i, t, s | T], B) :-
+    mitsblocks(T, B1),
+    B is B1 + 1.
+
+% Continue recursively for non-'m' elements
+mitsblocks([H | T], B) :-
+    H \= m,
+    mitsblocks(T, B).
+% ?- mitsblocks([m,q,m,m,i,i,i,t,t,t,s,s,s], B).
+% false.
+% correct answer B=1.
