@@ -1,0 +1,42 @@
+findnum(L1, L2, Num) :-
+  length(L1, N),
+  length(L2, M),
+  N =:= M,
+  maplist(replace, L1, ReplacedL1),
+  maplist(replace, L2, ReplacedL2),
+  sort(ReplacedL1, SortedL1),
+  sort(ReplacedL2, SortedL2),
+  find_minimum_maximum_number(SortedL1, SortedL2, Num).
+
+replace(0, X) :-
+  nonvar(X),
+  !,
+  X is 2 * _.
+
+replace(1, X) :-
+  nonvar(X),
+  !,
+  X is 2 * _ + 1.
+
+replace(0, 0).
+replace(1, 1).
+
+find_minimum_maximum_number([], [], 0).
+find_minimum_maximum_number([H1|T1], [H2|T2], Num) :-
+  find_minimum_maximum_number(T1, T2, PrevNum),
+  min(H1, H2, Max),
+  Num is PrevNum * 10 + Max.
+
+min(X, Y, Max) :-
+  X =< Y,
+  Max is X.
+
+min(X, Y, Max) :-
+  Y < X,
+  Max is Y.
+
+% ?- findnum([0,1,0,1],[1,0,0,1],Num).
+% Num = 10
+% correcr answer Num = 9
+
+
