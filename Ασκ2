@@ -5,7 +5,10 @@ mitsblocks([], 0).
 mitsblocks([m, i, t, s | T], B) :-
     mitsblocks(T, B1),
     B is B1 + 1.
-
+%mitsblocks([m, i, t, s | T], B) :-
+  mitsblocks(T, B1),
+  B is B1 + 1,
+  B > 0.
 % Continue recursively for non-'m' elements
 mitsblocks([H | T], B) :-
     H \= m,
