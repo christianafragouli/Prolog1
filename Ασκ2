@@ -1,18 +1,50 @@
-% Base case of the recursive relation
-mitsblocks([], 0).
+% Base case: an empty list has no successive repetitions.
+remove_successive_repetitions([], []).
 
-% Recursive relation for mits-blocks
-mitsblocks([m, i, t, s | T], B) :-
-    mitsblocks(T, B1),
-    B is B1 + 1.
-%mitsblocks([m, i, t, s | T], B) :-
-  mitsblocks(T, B1),
-  B is B1 + 1,
-  B > 0.
-% Continue recursively for non-'m' elements
-mitsblocks([H | T], B) :-
-    H \= m,
-    mitsblocks(T, B).
-% ?- mitsblocks([m,q,m,m,i,i,i,t,t,t,s,s,s], B).
-% false.
-% correct answer B=1.
+% Recursive case: remove successive repetitions.
+remove_successive_repetitions([X], [X]).
+remove_successive_repetitions([X, X | Rest], Result) :-
+    remove_successive_repetitions([X | Rest], Result).
+
+remove_successive_repetitions([X, Y | Rest], [X | Result]) :-
+    X \= Y,
+    remove_successive_repetitions([Y | Rest], Result).
+
+% Predicate to remove elements other than 'm', 'i', 't', 's'.
+remove_non_mits([], []).
+remove_non_mits([X | Rest], Result) :-
+    (   member(X, ['m', 'i', 't', 's'])
+    ->  Result = [X | Tail]
+    ;   Result = Tail
+    ),
+    remove_non_mits(Rest, Tail).
+
+% Main predicate combining both steps.
+remove_repetitions_and_non_mits(Input, FinalResult) :-
+    remove_successive_repetitions(Input, IntermediateResult),
+    remove_non_mits(IntermediateResult, FinalResult).
+
+% Example usage:
+% ?- remove_repetitions_and_non_mits([1, 2, 2, 3, 3, 3, 4, 4, 5], Result).
+% Result = [1, 2, 3, 4, 5].
+% ?- remove_repetitions_and_non_mits([m, i, t, s, a, b, c, t, i, t, i, o, u, s], Result).
+% Result = [m, i, t, s, t, i, t, s].
+% Base case: an empty list has zero occurrences of 'mits'.
+count_occurrences([], 0).
+
+% Recursive case: count occurrences.
+count_occurrences([m, i, t, s | Rest], Count) :-
+    count_occurrences(Rest, RestCount),
+    Count is RestCount + 1.
+
+count_occurrences([_ | Rest], Count) :-
+    count_occurrences(Rest, Count).
+
+% Main predicate combining all steps.
+find_mits_occurrences(Input, Occurrences) :-
+    remove_repetitions_and_non_mits(Input, Processed),
+    count_occurrences(Processed, Occurrences).
+
+% Example usage:
+% ?- find_mits_occurrences([m, i, t, s, a, m, i, t, s, b, c, t, i, t, i, o, u, s], Result).
+% Result = 2.
