@@ -1,0 +1,24 @@
+% Predicate to check if two numbers have the same digits
+same_digits(Number1, Number2) :-
+    number_chars(Number1, Digits1),
+    number_chars(Number2, Digits2),
+    permutation(Digits1, Digits2).
+
+% Predicate to generate a list of numbers with the same digits as a given number
+same_digits_list(Number, List) :-
+    findall(X, (between(1, 9999, X), same_digits(Number, X)), UnsortedList),
+    sort(UnsortedList, List).
+
+% Predicate to find the element to the right of NUMBER in the Result list
+element_to_right_of(NUMBER, Result, ElementToRight) :-
+    append(_, [NUMBER, ElementToRight | _], Result).
+
+% Example usage:
+% ?- same_digits_list(123, Result), element_to_right_of(123, Result, Element).
+% Result = [123, 132, 213, 231, 312, 321],
+% Element = 132.
+
+% ?- same_digits_list(456, Result), element_to_right_of(456, Result, Element).
+% Result = [456, 465, 546, 564, 645, 654],
+% Element = 465.
+4
